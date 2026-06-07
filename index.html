@@ -6,25 +6,31 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="PAS">
-<meta name="theme-color" content="#0a0e0d">
+<meta name="theme-color" content="#0d1b2e">
 <link rel="manifest" href="manifest.json">
 <title>NOLS PAS</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700&display=swap');
 
   :root {
-    --bg: #0a0e0d;
-    --surface: #111916;
-    --border: #1e2e28;
-    --accent: #00e87a;
-    --accent-dim: #00994d;
-    --warn: #ff6b35;
-    --text: #c8d9d2;
-    --text-dim: #5a7a6e;
-    --mono: 'Share Tech Mono', monospace;
-    --sans: 'Barlow Condensed', sans-serif;
-    --safe-top: env(safe-area-inset-top, 0px);
-    --safe-bot: env(safe-area-inset-bottom, 0px);
+    /* NOLS: deep navy base, orange accent, bright white text */
+    --bg:          #0d1b2e;
+    --surface:     #162338;
+    --surface2:    #1e2f47;
+    --border:      #2a3f5f;
+    --border-hi:   #3a5478;
+    --accent:      #f47920;   /* NOLS orange */
+    --accent-dim:  #b85c18;
+    --accent-pale: #ff9a4d;
+    --warn:        #e03e3e;
+    --text:        #ffffff;   /* pure white for sunlight readability */
+    --text-body:   #e8eef5;   /* near-white for body text */
+    --text-detail: #c8d8ea;   /* high-contrast detail text (was the problem) */
+    --text-dim:    #7a9cc0;   /* muted but still readable */
+    --mono:        'Share Tech Mono', monospace;
+    --sans:        'Barlow Condensed', sans-serif;
+    --safe-top:    env(safe-area-inset-top, 0px);
+    --safe-bot:    env(safe-area-inset-bottom, 0px);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -38,7 +44,6 @@
     user-select: none;
   }
 
-  /* ── LAYOUT ── */
   #app {
     display: flex;
     flex-direction: column;
@@ -53,13 +58,14 @@
     align-items: center;
     justify-content: space-between;
     padding: 10px 16px 8px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 2px solid var(--accent);
     flex-shrink: 0;
+    background: #0a1524;
   }
 
   .logo {
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: 12px;
     color: var(--accent);
     letter-spacing: 3px;
     text-transform: uppercase;
@@ -67,36 +73,37 @@
 
   .step-counter {
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-dim);
     letter-spacing: 1px;
   }
 
-  /* ── PROGRESS BAR ── */
+  /* ── PROGRESS PIPS ── */
   .progress-track {
     display: flex;
-    gap: 3px;
+    gap: 4px;
     padding: 8px 16px;
     flex-shrink: 0;
+    background: #0a1524;
   }
 
   .pip {
-    height: 3px;
+    height: 4px;
     flex: 1;
     background: var(--border);
     border-radius: 2px;
     transition: background 0.3s;
     cursor: pointer;
   }
-  .pip.done { background: var(--accent-dim); }
-  .pip.active { background: var(--accent); }
+  .pip.done   { background: var(--accent-dim); }
+  .pip.active { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
 
-  /* ── MAIN CONTENT ── */
+  /* ── MAIN ── */
   main {
     flex: 1;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding: 0 16px 16px;
+    padding: 0 14px 16px;
   }
 
   /* ── PHASE HEADER ── */
@@ -106,29 +113,29 @@
     color: var(--accent);
     letter-spacing: 4px;
     text-transform: uppercase;
-    padding: 16px 0 6px;
+    padding: 14px 0 4px;
   }
 
   .phase-title {
     font-family: var(--sans);
     font-weight: 700;
-    font-size: 36px;
-    line-height: 1;
-    letter-spacing: -0.5px;
+    font-size: 40px;
+    line-height: 0.95;
     color: #fff;
     margin-bottom: 4px;
+    letter-spacing: -0.5px;
   }
 
   .phase-subtitle {
-    font-size: 14px;
-    font-weight: 300;
+    font-size: 13px;
+    font-weight: 400;
     color: var(--text-dim);
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
   }
 
-  /* ── CHECKLIST ITEMS ── */
+  /* ── CHECKLIST ── */
   .checklist {
     display: flex;
     flex-direction: column;
@@ -137,48 +144,49 @@
 
   .item {
     display: flex;
-    align-items: stretch;
+    flex-direction: column;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 8px;
     overflow: hidden;
     transition: border-color 0.2s;
+  }
+
+  .item-row {
+    display: flex;
+    align-items: stretch;
     cursor: pointer;
   }
 
-  .item.checked { border-color: var(--accent-dim); }
+  .item.checked { border-color: var(--accent-dim); background: #162e18; }
   .item.checked .item-check { background: var(--accent); }
-  .item.checked .item-label { color: var(--text-dim); text-decoration: line-through; text-decoration-color: var(--text-dim); }
+  .item.checked .item-label {
+    color: var(--text-dim);
+    text-decoration: line-through;
+    text-decoration-color: var(--accent-dim);
+  }
 
   .item-check {
-    width: 44px;
+    width: 50px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--border);
+    background: var(--surface2);
     transition: background 0.2s;
+    border-right: 1px solid var(--border);
   }
 
-  .item-check svg { width: 18px; height: 18px; }
-  .item-check .unchecked-icon { display: block; }
-  .item-check .checked-icon { display: none; }
+  .item-check svg { width: 22px; height: 22px; }
+  .item-check .unchecked-icon { display: block; color: var(--text-dim); }
+  .item-check .checked-icon   { display: none; color: #000; }
   .item.checked .item-check .unchecked-icon { display: none; }
-  .item.checked .item-check .checked-icon { display: block; }
+  .item.checked .item-check .checked-icon   { display: block; }
 
   .item-body {
     flex: 1;
-    padding: 10px 12px;
+    padding: 11px 10px;
     min-width: 0;
-  }
-
-  .item-label {
-    font-family: var(--sans);
-    font-weight: 600;
-    font-size: 17px;
-    letter-spacing: 0.3px;
-    line-height: 1.2;
-    transition: color 0.2s;
   }
 
   .item-tag {
@@ -186,33 +194,41 @@
     font-size: 10px;
     color: var(--accent);
     letter-spacing: 2px;
-    margin-bottom: 2px;
+    margin-bottom: 1px;
+  }
+
+  .item-label {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 19px;
+    letter-spacing: 0.2px;
+    line-height: 1.15;
+    color: var(--text);
+    transition: color 0.2s;
   }
 
   .item-expand {
-    width: 36px;
+    width: 40px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--text-dim);
-    font-size: 18px;
-    transition: color 0.2s, transform 0.2s;
+    font-size: 20px;
+    font-weight: 300;
+    transition: color 0.2s, transform 0.25s;
+    border-left: 1px solid var(--border);
+    cursor: pointer;
   }
 
   .item.open .item-expand { color: var(--accent); transform: rotate(90deg); }
 
+  /* ── DETAIL PANEL — high contrast fix ── */
   .item-detail {
     display: none;
-    padding: 0 12px 10px 12px;
-    font-size: 13px;
-    line-height: 1.55;
-    color: var(--text-dim);
-    font-family: var(--sans);
-    font-weight: 300;
-    border-top: 1px solid var(--border);
-    margin-top: 6px;
-    padding-top: 8px;
+    padding: 10px 14px 12px 14px;
+    background: #0f2040;           /* darker than surface for depth */
+    border-top: 1px solid var(--border-hi);
   }
   .item.open .item-detail { display: block; }
 
@@ -220,94 +236,63 @@
     list-style: none;
     padding: 0;
     margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
   }
 
   .item-detail ul li {
-    padding: 2px 0;
     display: flex;
     gap: 8px;
+    font-family: var(--sans);
+    font-size: 15px;           /* larger than before */
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--text-body);   /* near-white, was dim grey */
   }
 
   .item-detail ul li::before {
-    content: '›';
+    content: '▸';
     color: var(--accent);
     flex-shrink: 0;
+    font-size: 12px;
+    margin-top: 2px;
   }
 
-  /* ── WARN ITEMS ── */
-  .item.warn { border-color: #2e1a10; }
-  .item.warn .item-tag { color: var(--warn); }
-  .item.warn.checked { border-color: var(--accent-dim); }
+  /* warn items */
+  .item.warn { border-left: 3px solid var(--warn); }
+  .item.warn .item-tag { color: #ff6b6b; }
+  .item.warn.checked { border-left-color: var(--accent-dim); }
 
-  /* ── SECTION DIVIDER ── */
+  /* section divider */
   .section-divider {
     font-family: var(--mono);
     font-size: 10px;
     color: var(--text-dim);
     letter-spacing: 3px;
     text-transform: uppercase;
-    padding: 14px 0 6px;
+    padding: 12px 0 6px;
     border-bottom: 1px solid var(--border);
     margin-bottom: 6px;
   }
 
-  /* ── VITALS TABLE ── */
-  .vitals-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-    margin-bottom: 6px;
-  }
-
-  .vital-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 10px 12px;
-    cursor: pointer;
-    transition: border-color 0.2s;
-  }
-
-  .vital-card.checked { border-color: var(--accent-dim); }
-  .vital-card.checked .vital-label { color: var(--text-dim); }
-
-  .vital-abbr {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--accent);
-    letter-spacing: 2px;
-    margin-bottom: 2px;
-  }
-
-  .vital-label {
-    font-weight: 600;
-    font-size: 15px;
-    line-height: 1.1;
-  }
-
-  .vital-normal {
-    font-size: 11px;
-    color: var(--text-dim);
-    margin-top: 4px;
-    font-family: var(--mono);
-  }
-
-  /* ── NAV FOOTER ── */
+  /* ── FOOTER NAV ── */
   footer {
     display: flex;
     gap: 8px;
-    padding: 10px 16px;
+    padding: 10px 14px;
     border-top: 1px solid var(--border);
     flex-shrink: 0;
+    background: #0a1524;
   }
 
   .btn {
     flex: 1;
-    padding: 14px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: var(--surface);
-    color: var(--text);
+    padding: 15px;
+    border: 1px solid var(--border-hi);
+    border-radius: 8px;
+    background: var(--surface2);
+    color: var(--text-body);
     font-family: var(--sans);
     font-weight: 600;
     font-size: 14px;
@@ -318,21 +303,23 @@
     -webkit-appearance: none;
   }
 
-  .btn:active { transform: scale(0.97); }
-  .btn:disabled { opacity: 0.3; cursor: default; }
+  .btn:active { transform: scale(0.97); opacity: 0.85; }
+  .btn:disabled { opacity: 0.25; cursor: default; }
 
   .btn-primary {
     background: var(--accent);
-    color: #000;
+    color: #fff;
     border-color: var(--accent);
     flex: 2;
+    font-size: 15px;
+    font-weight: 700;
   }
 
-  .btn-reset {
-    flex: 0 0 auto;
-    padding: 14px 16px;
-    font-size: 18px;
+  .btn-icon {
+    flex: 0 0 52px;
+    font-size: 20px;
     letter-spacing: 0;
+    padding: 15px 0;
   }
 
   /* ── COMPLETE SCREEN ── */
@@ -343,36 +330,39 @@
     justify-content: center;
     height: 100%;
     text-align: center;
-    padding: 32px;
-    gap: 12px;
+    padding: 32px 24px;
+    gap: 10px;
   }
 
   .complete-icon {
-    font-size: 64px;
-    line-height: 1;
-    color: var(--accent);
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px;
+    color: #fff;
+    margin-bottom: 8px;
   }
 
   .complete-title {
     font-weight: 700;
-    font-size: 32px;
+    font-size: 34px;
     color: #fff;
-    letter-spacing: -0.5px;
   }
 
   .complete-sub {
-    font-size: 13px;
+    font-size: 12px;
     color: var(--text-dim);
-    letter-spacing: 2px;
+    letter-spacing: 3px;
     text-transform: uppercase;
     font-family: var(--mono);
   }
 
   .complete-time {
     font-family: var(--mono);
-    font-size: 28px;
+    font-size: 36px;
     color: var(--accent);
-    margin-top: 8px;
+    margin: 4px 0 16px;
   }
 
   .complete-actions {
@@ -380,10 +370,8 @@
     flex-direction: column;
     gap: 8px;
     width: 100%;
-    margin-top: 16px;
   }
 
-  /* ── SCROLLBAR ── */
   main::-webkit-scrollbar { width: 3px; }
   main::-webkit-scrollbar-track { background: transparent; }
   main::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
@@ -395,21 +383,17 @@
     <span class="logo">NOLS · PAS</span>
     <span class="step-counter" id="step-counter">01 / 05</span>
   </header>
-
   <div class="progress-track" id="progress-track"></div>
-
   <main id="main-content"></main>
-
   <footer id="footer">
-    <button class="btn btn-reset" id="btn-back" onclick="nav(-1)" title="Back">←</button>
+    <button class="btn btn-icon" id="btn-back" onclick="nav(-1)">←</button>
     <button class="btn btn-primary" id="btn-next" onclick="nav(1)">NEXT</button>
-    <button class="btn btn-reset" onclick="resetAll()" title="Reset">↺</button>
+    <button class="btn btn-icon" onclick="resetAll()" title="New patient">↺</button>
   </footer>
-
   <div id="complete-screen">
     <div class="complete-icon">✓</div>
     <div class="complete-title">Assessment Complete</div>
-    <div class="complete-sub id="complete-time-label">Elapsed Time</div>
+    <div class="complete-sub">Elapsed Time</div>
     <div class="complete-time" id="elapsed-time">00:00</div>
     <div class="complete-actions">
       <button class="btn btn-primary" onclick="resetAll()">NEW PATIENT</button>
@@ -422,203 +406,390 @@
 const PHASES = [
   {
     id: 'scene',
-    label: '01 · SCENE',
+    label: '01 · SCENE SIZE-UP',
     title: 'Scene\nSize-Up',
-    subtitle: 'Before contact',
+    subtitle: 'Before you touch the patient',
     items: [
       {
-        tag: 'SAFETY',
-        label: 'Scene Safe?',
-        detail: ['Hazards to you/team (traffic, rockfall, ice, electricity)', 'Hazards to patient still active?', 'PPE/BSI — gloves, eye protection if needed', 'Make scene safe or move if needed']
+        tag: '1 · SAFETY',
+        label: 'Scene Safety / Identify Hazards',
+        detail: [
+          'Hazards to YOU first, then team, bystanders, patient',
+          'Traffic, rockfall, ice, electricity, moving water, wildlife',
+          'Is the mechanism of injury still active?',
+          'Make scene safe — or move patient only if immediate danger',
+          'Your safety = your ability to help anyone'
+        ]
       },
       {
-        tag: 'MOI/NOI',
-        label: 'Mechanism / Nature',
-        detail: ['Trauma: how? height, speed, force, penetrating?', 'Medical: sudden vs gradual onset', 'MOI guides spinal precautions decision', 'Bystander accounts if patient unresponsive']
+        tag: '2 · MOI',
+        label: 'Mechanism of Injury',
+        detail: [
+          'Trauma: how? Height fallen, speed, force, penetrating vs blunt',
+          'Medical: sudden vs gradual onset',
+          'MOI guides spinal precautions decision',
+          'Ask bystanders if patient unresponsive',
+          'Look for clues: position, damage, equipment'
+        ]
       },
       {
-        tag: 'PATIENTS',
-        label: 'Patient Count',
-        detail: ['Look beyond the obvious patient', 'Check vehicle interiors, water, surroundings', 'Triage if multiple patients (START/JumpSTART)']
+        tag: '3 · BSI',
+        label: 'Establish BSI / Don PPE',
+        detail: [
+          'Body Substance Isolation — before patient contact',
+          'Gloves (always), eye protection if splash risk',
+          'Mask if respiratory concern',
+          'Consider your exposure to blood, fluids, vomit',
+          'If no gloves: improvise (plastic bags, extra clothing)'
+        ]
       },
       {
-        tag: 'RESOURCES',
-        label: 'Resources / Help',
-        detail: ['Comms: radio, sat messenger, cell service?', 'Distance/time to definitive care', 'Gear available: first aid kit, AED, O2', 'Activate EMS early if serious']
+        tag: '4 · PATIENTS',
+        label: 'Number of Patients / Consider Resources',
+        detail: [
+          'Look beyond the obvious victim',
+          'Check vehicle interiors, water, dense vegetation',
+          'Multiple patients → triage now (START/JumpSTART)',
+          'Resources: comms, first aid kit, AED, O2, distance to care',
+          'Call for help EARLY — don\'t wait to confirm severity'
+        ]
+      },
+      {
+        tag: '5 · IMPRESSION',
+        label: 'General Impression of Seriousness',
+        detail: [
+          'Is this sick or not sick? Trust your gut',
+          'Chief complaint — what is wrong from across the room?',
+          'Appearance: position, skin color, distress level',
+          'Sets your urgency: immediate, delayed, or routine',
+          'Identifies priority: life threat vs non-urgent'
+        ]
       }
     ]
   },
   {
     id: 'abcde',
-    label: '02 · LIFE THREATS',
+    label: '02 · INITIAL ASSESSMENT',
     title: 'ABCDE',
-    subtitle: 'Fix before moving on',
-    warn: true,
+    subtitle: 'Life threats — fix before moving on',
     items: [
       {
-        tag: 'A',
+        tag: 'A · AIRWAY',
         label: 'Airway',
         warn: true,
-        detail: ['Open? Clear?', 'Unconscious → head-tilt/chin-lift or jaw thrust (trauma)', 'Sounds: gurgling=fluid, stridor=partial obstruction', 'Recovery position if unconscious & breathing', 'Consider NPA if available']
+        detail: [
+          'Open and clear? Ask patient a question — talking = patent airway',
+          'Unconscious → head-tilt/chin-lift; trauma → jaw thrust',
+          'Sounds: gurgling = fluid; stridor = partial obstruction',
+          'Clear with finger sweep, suction, or positioning',
+          'Recovery position if unconscious and breathing adequately'
+        ]
       },
       {
-        tag: 'B',
+        tag: 'B · BREATHING',
         label: 'Breathing',
         warn: true,
-        detail: ['Rate: normal 12–20/min adult', 'Depth and effort — labored, accessory muscles?', 'Bilateral chest rise equal?', 'Open chest wound → occlusive dressing (vented)', 'Tension pneumo signs: absent breath sounds, tracheal deviation, JVD']
+        detail: [
+          'Rate: normal adult 12–20/min; look, listen, feel',
+          'Depth and effort — labored? Accessory muscles? Nasal flaring?',
+          'Bilateral chest rise equal?',
+          'Open chest wound → vented occlusive dressing',
+          'Tension pneumo: absent sounds, tracheal deviation, JVD, shock'
+        ]
       },
       {
-        tag: 'C',
+        tag: 'C · CIRCULATION',
         label: 'Circulation / Bleeding',
         warn: true,
-        detail: ['Life-threatening hemorrhage → STOP IT NOW', 'Direct pressure → wound packing → tourniquet', 'Tourniquet: 2–3" above wound, note time', 'Radial pulse quality: rate, strength, regular?', 'Shock signs: pale/cool/clammy, altered LOC, weak rapid pulse']
+        detail: [
+          'LIFE-THREATENING HEMORRHAGE → STOP IT FIRST',
+          'Direct pressure → wound packing → tourniquet',
+          'Tourniquet: 2–3" above wound, write time on skin',
+          'Radial pulse: rate, strength, rhythm',
+          'Shock signs: pale/cool/clammy, altered LOC, weak rapid pulse'
+        ]
       },
       {
-        tag: 'D',
+        tag: 'D · DISABILITY',
         label: 'Disability (LOC)',
         warn: true,
-        detail: ['AVPU: Alert / Voice / Pain / Unresponsive', 'Spinal precautions if: MOI + altered LOC, axial tenderness, neuro deficit, distracting injury, intoxication', 'Document baseline — changes matter most']
+        detail: [
+          'AVPU: Alert / responds to Voice / responds to Pain / Unresponsive',
+          'Spinal precautions if: MOI + altered LOC, midline tenderness, neuro deficit, intoxication, distracting injury',
+          'Establish responsiveness: call name, painful stimulus if needed',
+          'Document baseline — changes in LOC are the most critical finding'
+        ]
       },
       {
-        tag: 'E',
+        tag: 'E · EXPOSE',
         label: 'Expose / Environment',
         warn: true,
-        detail: ['Cut away clothing to find hidden injuries', 'Check: torso, axillae, groin, back', 'Prevent hypothermia immediately — insulate beneath and above', 'Replace wet clothes, protect from wind']
+        detail: [
+          'Cut away or remove clothing to find hidden injuries',
+          'Check: torso front/back, axillae, groin, scalp',
+          'Prevent hypothermia IMMEDIATELY — insulate below and above',
+          'Replace wet clothes; protect from wind, ground cold',
+          'Treat life threats found here before proceeding'
+        ]
       }
     ]
   },
   {
     id: 'h2t',
-    label: '03 · PHYSICAL EXAM',
+    label: '03 · SECONDARY ASSESSMENT',
     title: 'Head\nto Toe',
-    subtitle: 'Look · Feel · Ask',
+    subtitle: 'Look · Feel · Ask at each region',
     items: [
       {
         tag: 'HEAD',
         label: 'Head & Scalp',
-        detail: ['DCAP-BTLS: Deformity, Contusions, Abrasions, Punctures, Burns, Tenderness, Lacerations, Swelling', 'Battle\'s sign (mastoid bruising) — late finding', 'Raccoon eyes — late finding', 'CSF from ears/nose (clear watery fluid)?']
+        detail: [
+          'DCAP-BTLS: Deformity, Contusions, Abrasions, Punctures, Burns, Tenderness, Lacerations, Swelling',
+          'Scalp: feel for step-offs, boggy areas, active bleeding',
+          'Battle\'s sign (mastoid bruising) and raccoon eyes are late findings',
+          'Fluid from ears or nose: clear watery = CSF until proven otherwise'
+        ]
       },
       {
         tag: 'EYES',
         label: 'Eyes — PERRL',
-        detail: ['Pupils Equal, Round, Reactive to Light', 'Unequal pupils → brain herniation until proven otherwise', 'Bilateral fixed dilated → cardiac arrest / severe hypoxia', 'Contact lenses: remove if unconscious']
+        detail: [
+          'Pupils Equal, Round, Reactive to Light',
+          'Unequal pupils → herniation, direct trauma, or medications',
+          'Bilateral fixed dilated → cardiac arrest, severe anoxia, atropine',
+          'Bilateral pinpoint → opioid toxicity, pons injury',
+          'Contact lenses: remove if unconscious'
+        ]
       },
       {
-        tag: 'FACE/NECK',
+        tag: 'FACE / NECK',
         label: 'Face & Neck',
-        detail: ['Facial symmetry, step-offs', 'Neck: midline trachea? Deviated → tension pneumo', 'JVD (jugular vein distension) → tension pneumo / cardiac tamponade', 'C-spine tenderness: midline posterior bony tenderness']
+        detail: [
+          'Facial symmetry, step-offs, tenderness',
+          'Trachea midline? Deviation → tension pneumothorax',
+          'JVD (jugular vein distension) → tension pneumo, cardiac tamponade',
+          'C-spine: posterior midline bony tenderness at each level',
+          'Subcutaneous emphysema in neck: crunching under skin'
+        ]
       },
       {
         tag: 'CHEST',
         label: 'Chest',
-        detail: ['Paradoxical movement → flail chest', 'Breath sounds: bilateral, equal? (listen if stethoscope)', 'Subcutaneous emphysema (crackling under skin)', 'Rib tenderness: compress laterally and anterior-posterior']
+        detail: [
+          'Paradoxical movement on one side → flail segment',
+          'Breath sounds: bilateral and equal (stethoscope if available)',
+          'Rib tenderness: compress lateral-to-medial AND anterior-posterior',
+          'Subcutaneous emphysema: crackling under skin of chest',
+          'Penetrating wound → vented occlusive dressing'
+        ]
       },
       {
         tag: 'ABDOMEN',
         label: 'Abdomen',
-        detail: ['4 quadrants: RUQ, LUQ, RLQ, LLQ', 'Rigidity / guarding → peritoneal irritation (serious)', 'Distension', 'Evisceration → moist sterile dressing, do not replace', 'Do not palpate impaled objects']
+        detail: [
+          'Palpate all 4 quadrants: RUQ, LUQ, RLQ, LLQ',
+          'Rigidity or guarding → peritoneal irritation, internal bleeding',
+          'Distension → internal bleeding, hollow organ rupture',
+          'Evisceration: cover with moist sterile dressing — do NOT replace',
+          'Impaled objects: stabilize in place, do NOT remove'
+        ]
       },
       {
         tag: 'PELVIS',
         label: 'Pelvis',
-        detail: ['Compress iliac crests medially and posteriorly ONCE', 'Instability = major hemorrhage risk — do not repeat', 'Pelvic binder if available and unstable', 'Priapism → spinal cord injury']
+        detail: [
+          'Compress iliac crests medially and posteriorly — ONCE only',
+          'Instability = massive hemorrhage potential; do NOT repeat exam',
+          'Apply pelvic binder if unstable and available',
+          'Priapism → suspect spinal cord injury'
+        ]
       },
       {
         tag: 'EXTREMITIES',
-        label: 'Extremities ×4',
-        detail: ['PMS: Pulse, Motor, Sensation — all four limbs', 'Distal pulse: radial (arm), dorsalis pedis/posterior tibial (leg)', 'Motor: grip strength, foot plantar/dorsiflexion', 'Sensation: light touch distal to injury', 'Splint in position found unless no distal pulse']
+        label: 'All Four Extremities',
+        detail: [
+          'PMS ×4: Pulse, Motor function, Sensation — compare bilaterally',
+          'Distal pulse: radial/ulnar (arm), dorsalis pedis/post. tibial (leg)',
+          'Motor: grip strength, wrist extension; foot dorsi/plantarflexion',
+          'Sensation: light touch or pin-prick distal to any injury',
+          'Splint in position of function unless absent distal pulse'
+        ]
       },
       {
         tag: 'BACK',
         label: 'Back & Spine',
-        detail: ['Log-roll with spinal precautions if indicated', 'Midline posterior vertebral tenderness — palpate each level', 'Inspect back, flanks, posterior pelvis', 'Step-offs or gaps between spinous processes']
+        detail: [
+          'Log-roll with spinal precautions if mechanism warrants',
+          'Palpate each vertebral spinous process for midline tenderness',
+          'Step-offs or gaps between vertebrae',
+          'Inspect posterior thorax, flanks, posterior pelvis, buttocks'
+        ]
       }
     ]
   },
   {
     id: 'vitals',
-    label: '04 · VITALS',
-    title: 'Vitals',
-    subtitle: 'Baseline → trend every 15–30 min',
-    vitals: true,
+    label: '04 · SECONDARY ASSESSMENT',
+    title: 'Vital\nSigns',
+    subtitle: 'Baseline → repeat every 15–30 min',
     items: [
       {
         tag: 'LOC',
         label: 'Level of Consciousness',
-        detail: ['AVPU or GCS', 'GCS: Eyes (1–4) + Verbal (1–5) + Motor (1–6)', 'Note orientation: person, place, time, event', 'Changes in LOC are the most significant vital sign']
+        detail: [
+          'AVPU: Alert / Voice / Pain / Unresponsive',
+          'Orientation: person, place, time, event (A&O ×4)',
+          'GCS if needed: Eyes (1–4) + Verbal (1–5) + Motor (1–6) = 3–15',
+          'LOC changes are the single most significant vital sign trend'
+        ]
       },
       {
         tag: 'HR',
         label: 'Heart Rate',
-        detail: ['Rate: adult normal 60–100 bpm', 'Rhythm: regular or irregular', 'Quality: strong/bounding, weak/thready, absent', 'Radial absent → systolic <80 mmHg approximately', 'Tachycardia: pain, shock, fear, hypoxia, hypothermia (late)']
+        detail: [
+          'Rate: normal adult 60–100 bpm; count 30 sec ×2',
+          'Rhythm: regular or irregular',
+          'Quality: strong/bounding, weak/thready',
+          'Absent radial pulse → systolic approx <80 mmHg',
+          'Tachycardia: pain, fear, shock, hypoxia, hypothermia (late bradycardia)'
+        ]
       },
       {
         tag: 'RR',
         label: 'Respiratory Rate',
-        detail: ['Normal adult: 12–20/min', 'Count 30 sec × 2 (patient shouldn\'t know you\'re counting)', 'Depth: shallow, normal, deep', 'Quality: regular, Cheyne-Stokes, Kussmaul', '>30 or <8 → serious']
+        detail: [
+          'Normal adult: 12–20 breaths/min',
+          'Count without patient knowing (affects rate)',
+          'Depth: shallow, normal, deep; quality: regular or irregular',
+          '>30 or <8 → serious compromise',
+          'Kussmaul (deep/fast) = metabolic acidosis; Cheyne-Stokes = brain injury'
+        ]
       },
       {
         tag: 'SKIN',
-        label: 'Skin — CTM',
-        detail: ['Color: pink/normal, pale, cyanotic, flushed, jaundiced, mottled', 'Temperature: warm, hot, cool, cold', 'Moisture: dry, moist, diaphoretic', 'Normal: warm dry pink', 'Cool, pale, diaphoretic = shock until proven otherwise']
+        label: 'Skin — Color, Temp, Moisture',
+        detail: [
+          'Color: pink (normal), pale, cyanotic, flushed, mottled, jaundiced',
+          'Temperature: warm, hot, cool, cold, clammy',
+          'Moisture: dry (normal), moist, diaphoretic (sweating)',
+          'Normal = warm, dry, pink',
+          'Cool + pale + diaphoretic = shock until proven otherwise'
+        ]
       },
       {
         tag: 'BP',
         label: 'Blood Pressure',
-        detail: ['Normal adult: ~120/80 mmHg', 'Hypotension: systolic <90 → shock', 'Field estimate: radial pulse present ≈ systolic >80', 'Femoral pulse present ≈ systolic >70', 'Carotid pulse present ≈ systolic >60']
+        detail: [
+          'Normal adult: ~120/80 mmHg',
+          'Hypotension: systolic <90 → treat for shock',
+          'Field estimate without cuff: radial pulse ≈ systolic >80',
+          'Femoral palpable ≈ systolic >70; carotid only ≈ systolic >60',
+          'Trending down is more significant than single reading'
+        ]
       },
       {
         tag: 'SpO₂',
-        label: 'Pulse Ox',
-        detail: ['Normal: 95–100%', '90–94% → supplemental O2 if available', '<90% → significant hypoxia', 'Unreliable: hypothermia, poor perfusion, nail polish, carbon monoxide poisoning', 'Treat the patient, not the number']
+        label: 'Pulse Oximetry',
+        detail: [
+          'Normal: 95–100%',
+          '90–94% → supplemental O2 if available',
+          '<90% → significant hypoxia, act immediately',
+          'Unreliable with: hypothermia, poor perfusion, nail polish, CO poisoning',
+          'Treat the patient, not the number'
+        ]
       },
       {
         tag: 'TEMP',
         label: 'Temperature',
-        detail: ['Hypothermia stages: Mild 32–35°C / Moderate 28–32°C / Severe <28°C', 'Mild: shivering, impaired coordination', 'Moderate: shivering stops, paradoxical undressing, altered LOC', 'Severe: no shivering, unconscious, VF risk', 'Hyperthermia: Heat exhaustion vs Heat stroke (altered LOC = stroke)']
+        detail: [
+          'Hypothermia: Mild 32–35°C / Moderate 28–32°C / Severe <28°C',
+          'Mild: shivering, impaired fine motor',
+          'Moderate: shivering stops, paradoxical undressing, altered LOC',
+          'Severe: rigid, unconscious — handle gently (VF risk)',
+          'Heat stroke (not exhaustion): altered LOC + hyperthermia = emergency'
+        ]
       },
       {
         tag: 'PUPILS',
         label: 'Pupils',
-        detail: ['Size: 2–6mm normal', 'Equal: unequal → herniation / direct eye trauma', 'Reactive: brisk, sluggish, fixed', 'Bilateral pinpoint → opioid overdose / pons injury', 'Bilateral dilated fixed → cardiac arrest, severe anoxia, atropine']
+        detail: [
+          'Normal: 2–6mm, equal, brisk reaction to light',
+          'Unequal (anisocoria) → herniation, direct trauma, prior surgery',
+          'Fixed + dilated bilateral → cardiac arrest, severe anoxia',
+          'Pinpoint bilateral → opioid OD, pons injury',
+          'Sluggish reaction → increased ICP, hypoxia, sedatives'
+        ]
       }
     ]
   },
   {
     id: 'sample',
-    label: '05 · HISTORY',
-    title: 'SAMPLE',
-    subtitle: 'Subjective information',
+    label: '05 · SECONDARY ASSESSMENT',
+    title: 'History\nSAMPLE',
+    subtitle: 'Subjective — patient / bystander',
     items: [
       {
-        tag: 'S',
+        tag: 'S · SYMPTOMS',
         label: 'Symptoms',
-        detail: ['Chief complaint in patient\'s own words', 'OPQRST for pain/symptoms:', '  Onset: sudden or gradual?', '  Provocation/Palliation: better or worse with anything?', '  Quality: describe the sensation', '  Radiation: does it go anywhere?', '  Severity: 0–10 scale', '  Time: how long? constant or intermittent?']
+        detail: [
+          'Chief complaint in patient\'s own words',
+          'OPQRST for pain: Onset, Provocation/Palliation, Quality, Radiation, Severity (0–10), Time',
+          'Constant or intermittent? Getting better or worse?',
+          'Associated symptoms: nausea, dizziness, SOB, numbness'
+        ]
       },
       {
-        tag: 'A',
+        tag: 'A · ALLERGIES',
         label: 'Allergies',
-        detail: ['Medications — especially antibiotics, NSAIDs', 'Foods', 'Environmental', 'Latex', 'Note: type of reaction (rash, anaphylaxis?)']
+        detail: [
+          'Medications — especially antibiotics, NSAIDs, sulfa drugs',
+          'Foods: nuts, shellfish, latex',
+          'Environmental: bees, wasps, plants',
+          'What type of reaction? Rash, GI upset, or full anaphylaxis?'
+        ]
       },
       {
-        tag: 'M',
+        tag: 'M · MEDICATIONS',
         label: 'Medications',
-        detail: ['Prescription medications', 'OTC drugs (aspirin, ibuprofen, antihistamines)', 'Supplements, herbal remedies', 'Last dose taken', 'Recent changes in medications']
+        detail: [
+          'All prescription medications — especially blood thinners, beta blockers, insulin',
+          'OTC: aspirin, ibuprofen, antihistamines, decongestants',
+          'Supplements, herbal remedies',
+          'Last dose taken? Any recent changes?',
+          'For altered LOC: could medications or recreational drugs be a factor?'
+        ]
       },
       {
-        tag: 'P',
-        label: 'Past History',
-        detail: ['Relevant medical conditions (cardiac, diabetes, seizures, asthma)', 'Prior surgeries, hospitalizations', 'Similar episodes before?', 'Medical ID bracelet/tag?', 'Doctor/emergency contact?']
+        tag: 'P · PAST HISTORY',
+        label: 'Pertinent Medical History',
+        detail: [
+          'Relevant conditions: cardiac, diabetes, seizures, asthma, COPD, bleeding disorders',
+          'Prior surgeries, hospitalizations',
+          'Had this happen before? What was the diagnosis?',
+          'Medical alert bracelet or card?',
+          'Emergency contact, physician, hospital preference'
+        ]
       },
       {
-        tag: 'L',
-        label: 'Last In/Out',
-        detail: ['Last meal: what, when, how much', 'Last fluids: type, quantity', 'Last urination: normal color and amount?', 'Last bowel movement', 'For women: last menstrual period (ectopic pregnancy risk)']
+        tag: 'L · LAST IN/OUT',
+        label: 'Last Intake / Output',
+        detail: [
+          'Last food: what, when, how much',
+          'Last fluid: type and volume',
+          'Last urination: normal color and amount? (dark = dehydrated)',
+          'Last bowel movement',
+          'For women of childbearing age: last menstrual period (rule out ectopic)'
+        ]
       },
       {
-        tag: 'E',
-        label: 'Events',
-        detail: ['What were they doing before?', 'What led up to this moment?', 'Did anything unusual happen?', 'Witnesses — what did they observe?', 'Position found in (fell, collapsed, lying down?)']
+        tag: 'E · EVENTS',
+        label: 'Events Leading Up',
+        detail: [
+          'What were they doing before the incident?',
+          'Did anything unusual happen — exertion, exposure, food, environmental?',
+          'Prodromal symptoms: dizziness, chest tightness, nausea before collapse?',
+          'Witness account: position found, sequence of events'
+        ]
       }
     ]
   }
@@ -632,7 +803,6 @@ let timerInterval = null;
 function getKey(p, i) { return `${p}-${i}`; }
 
 function init() {
-  // Register service worker
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(() => {});
   }
@@ -671,20 +841,22 @@ function renderPhase() {
     const detail = item.detail.map(d => `<li>${d}</li>`).join('');
     html += `
       <div class="item${warnClass}${isChecked ? ' checked' : ''}" id="item-${i}">
-        <div class="item-check" onclick="toggleCheck(${i}, event)">
-          <svg class="unchecked-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="18" height="18" rx="2"/>
-          </svg>
-          <svg class="checked-icon" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5">
-            <polyline points="20 6 9 17 4 12"/>
-          </svg>
+        <div class="item-row">
+          <div class="item-check" onclick="toggleCheck(${i}, event)">
+            <svg class="unchecked-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="3"/>
+            </svg>
+            <svg class="checked-icon" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <div class="item-body" onclick="toggleDetail(${i}, event)">
+            <div class="item-tag">${item.tag}</div>
+            <div class="item-label">${item.label}</div>
+          </div>
+          <div class="item-expand" onclick="toggleDetail(${i}, event)">›</div>
         </div>
-        <div class="item-body" onclick="toggleDetail(${i}, event)">
-          <div class="item-tag">${item.tag}</div>
-          <div class="item-label">${item.label}</div>
-          <div class="item-detail"><ul>${detail}</ul></div>
-        </div>
-        <div class="item-expand" onclick="toggleDetail(${i}, event)">›</div>
+        <div class="item-detail"><ul>${detail}</ul></div>
       </div>
     `;
   });
@@ -705,7 +877,8 @@ function toggleCheck(idx, e) {
   }
   const key = getKey(currentPhase, idx);
   checked[key] = !checked[key];
-  renderPhase();
+  const el = document.getElementById(`item-${idx}`);
+  el.classList.toggle('checked', checked[key]);
 }
 
 function toggleDetail(idx, e) {
@@ -717,10 +890,7 @@ function toggleDetail(idx, e) {
 function nav(dir) {
   const next = currentPhase + dir;
   if (next < 0) return;
-  if (next >= PHASES.length) {
-    showComplete();
-    return;
-  }
+  if (next >= PHASES.length) { showComplete(); return; }
   currentPhase = next;
   renderProgress();
   renderPhase();
@@ -730,7 +900,6 @@ function jumpTo(idx) {
   currentPhase = idx;
   renderProgress();
   renderPhase();
-  document.getElementById('main-content').scrollTop = 0;
 }
 
 function showComplete() {
@@ -739,10 +908,6 @@ function showComplete() {
   document.getElementById('footer').style.display = 'none';
   document.getElementById('complete-screen').style.display = 'flex';
   document.getElementById('progress-track').style.display = 'none';
-
-  const checkedCount = Object.values(checked).filter(Boolean).length;
-  const totalItems = PHASES.reduce((a, p) => a + p.items.length, 0);
-
   updateTimer();
 }
 
@@ -757,9 +922,7 @@ function updateTimer() {
 
 function resetAll() {
   clearInterval(timerInterval);
-  timerInterval = null;
-  startTime = null;
-  checked = {};
+  timerInterval = null; startTime = null; checked = {};
   currentPhase = 0;
   document.getElementById('main-content').style.display = '';
   document.getElementById('footer').style.display = '';
