@@ -186,6 +186,57 @@
   .complete-time { font-family: var(--mono); font-size: 36px; color: var(--accent); margin: 4px 0 16px; }
   .complete-actions { display: flex; flex-direction: column; gap: 8px; width: 100%; }
 
+  /* ── GATE BANNER ── */
+  .gate-banner {
+    border: 2px solid var(--warn);
+    border-radius: 8px;
+    background: #1a0a0a;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+  }
+
+  .gate-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--warn);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .gate-conditions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .gate-condition {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--text-body);
+  }
+
+  .gate-condition .gate-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--warn);
+    flex-shrink: 0;
+  }
+
+  .gate-footer {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--warn);
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid #3a1010;
+    letter-spacing: 1px;
+  }
+
   main::-webkit-scrollbar { width: 3px; }
   main::-webkit-scrollbar-track { background: transparent; }
   main::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
@@ -705,6 +756,7 @@ const PHASES = [
   {
     id: 'spine',
     label: '06 · FOCUSED SPINE ASSESSMENT',
+    gate: ['Wilderness context', 'Complete PAS performed', 'No signs or symptoms of spine injury'],
     title: 'Spine\nAssessment',
     subtitle: 'Clear or maintain precautions',
     items: [
@@ -839,10 +891,26 @@ function renderPhase() {
   const main = document.getElementById('main-content');
   const titleLines = phase.title.split('\n');
 
+  let gateBanner = '';
+  if (phase.gate) {
+    const dots = phase.gate.map(c => `
+      <div class="gate-condition">
+        <div class="gate-dot"></div>
+        <span>${c}</span>
+      </div>`).join('');
+    gateBanner = `
+      <div class="gate-banner">
+        <div class="gate-title">⚠ All three must be true to proceed</div>
+        <div class="gate-conditions">${dots}</div>
+        <div class="gate-footer">If any condition is NOT met — maintain precautions</div>
+      </div>`;
+  }
+
   let html = `
     <div class="phase-label">${phase.label}</div>
     <div class="phase-title">${titleLines.join('<br>')}</div>
     <div class="phase-subtitle">${phase.subtitle}</div>
+    ${gateBanner}
     <div class="checklist">
   `;
 
